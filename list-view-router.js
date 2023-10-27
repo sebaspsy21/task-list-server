@@ -13,4 +13,14 @@ listViewRouter.get('/incomplete', (req, res) => {
   res.json({ message: 'List of incomplete tasks' });
 });
 
+// Middleware para list-view-router
+function validateListViewParamsMiddleware(req, res, next) {
+    // Validar parámetros aquí si es necesario
+  
+  next();
+  }
+  
+  module.exports = validateListViewParamsMiddleware;
+  
+
 module.exports = listViewRouter;
