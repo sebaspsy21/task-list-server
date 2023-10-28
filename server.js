@@ -89,3 +89,66 @@ app.get('/tasks', (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor escuchando en el puerto 3020 `);
 });
+
+app.post('/tasks', (req, res) => {
+    const { description, completed } = req.body;
+    const newTask = { id: tasks.length + 1, description, completed };
+    tasks.push(newTask);
+    res.status(201).json(newTask);
+  });
+  
+  // Actualizar una tarea
+  app.put('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex((task) => task.id === taskId);
+    
+    if (taskIndex === -1) {
+      return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+    
+    const updatedTask = { ...tasks[taskIndex], ...req.body };
+    tasks[taskIndex] = updatedTask;
+    res.status(200).json(updatedTask);
+  });
+  
+  // Eliminar una tarea
+  app.delete('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const taskIndex = tasks.findIndex((task) => task.id === taskId);
+    
+    if (taskIndex === -1) {
+      return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+    
+    tasks.splice(taskIndex, 1);
+    res.status(204).send();
+  });
+  
+  // Listar todas las tareas
+  app.get('/tasks', (req, res) => {
+    res.status(200).json(tasks);
+  });
+  
+  // Listar las tareas completas
+  app.get('/tasks/completed', (req, res) => {
+    const completedTasks = tasks.filter((task) => task.completed);
+    res.status(200).json(completedTasks);
+  });
+  
+  // Listar las tareas incompletas
+  app.get('/tasks/incomplete', (req, res) => {
+    const incompleteTasks = tasks.filter((task) => !task.completed);
+    res.status(200).json(incompleteTasks);
+  });
+  
+  // Obtener una sola tarea
+  app.get('/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const task = tasks.find((t) => t.id === taskId);
+    
+    if (!task) {
+      return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+    
+    res.status(200).json(task);
+  });
